@@ -6,7 +6,10 @@
 import { readFileSync } from 'node:fs';
 import { inflateSync } from 'node:zlib';
 
-/** Two lines are the same below this share of differing pixels, and differ above `differ`. */
+/**
+ * Two lines are the same at or below this many differing pixels, as a share of the first line's inked pixels, and
+ * differ at or above `differ`; a line shifted by a wider glyph can differ by more than its own ink.
+ */
 const same = 0.01;
 const differ = 0.03;
 
@@ -169,7 +172,9 @@ const judge = share => (share <= same ? 'same' : share >= differ ? 'differs' : '
 function compare(first, second, label = '') {
   const share = difference(first, second);
   const result = judge(share);
-  console.log(`line ${second} against line ${first}: ${(share * 100).toFixed(2)}% of the pixels differ: ${result}${label}`);
+  console.log(
+    `line ${second} against line ${first}: differing pixels ${(share * 100).toFixed(2)}% of line ${first}'s ink: ${result}${label}`,
+  );
   return result;
 }
 
